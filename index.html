@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinesh Kumar R - Interactive Portfolio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5c63ff;
+            --secondary-color: #9333ea;
+            --accent-color: #38bdf8;
+            --dark-bg: #1e1f3f;
+            --code-color: #00ff87;
+        }
+
+        body {
+            margin: 0;
+            background: var(--dark-bg); /* Body background color */
+            font-family: 'Segoe UI', sans-serif;
+            overflow: auto; /* Allow scrolling on the body */
+            height: 100vh; /* Ensure body takes full height of the viewport */
+        }
+
+        #live-code-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            color: var(--code-color);
+            font-family: monospace;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(30, 31, 63, 0.95); /* Sidebar background */
+            padding: 2rem;
+            z-index: 100;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+            overflow-y: auto; /* Allow sidebar to scroll if content overflows */
+        }
+
+        .content-container {
+            margin-left: 320px;  /* Adjust based on the sidebar width */
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--dark-bg); /* Ensure the background is applied to the content */
+            height: 100vh;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        .page {
+            padding: 2rem;
+            width: 90%;
+            max-width: 900px;
+            background: rgba(30, 31, 63, 0.7); /* Background for each page */
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.6s ease-in-out forwards;
+            min-height: 80vh; /* Ensure minimum height for each page */
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .nav-link.active {
+            background: var(--secondary-color); /* Active link background color */
+        }
+
+
+
+        .profile-section {
+            margin-bottom: 2rem;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 6px solid var(--accent-color);
+            margin-bottom: 1rem;
+            transition: transform 1s;
+        }
+
+        .profile-img:hover {
+            transform: rotateY(180deg);
+        }
+
+        .profile-section h4, .profile-section p {
+            color: white;
+            margin: 0;
+        }
+
+        .profile-section p {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            margin-top: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+            display: block;
+            text-decoration: none;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--secondary-color);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+        }
+
+        .content-container {
+            margin-left: 320px;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            padding: 2rem;
+            width: 90%;
+            max-width: 900px;
+            background: rgba(30, 31, 63, 0.7);
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.6s ease-in-out forwards;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .section-card, .project-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 80vw;
+        }
+
+        .code-line {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 14px;
+            animation: scroll 10s linear forwards;
+            opacity: 0.8;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+    </style>
+</head>
+<body>
+    <div id="live-code-background"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="profile-section">
+            <img src="Dinesh's Photo.jpg" alt="Profile" class="profile-img">
+            <h4>Dinesh Kumar R</h4>
+            <p>B.Tech Information Technology</p>
+            <div class="social-icons">
+                <a href="https://github.com/R-Dinesh-Kumar2004" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/dinesh-kumar-r-0b6b6731a/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://leetcode.com/u/DineshKumar222004/" target="_blank"><i class="fab fa-leetcode"></i></a>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link active" data-page="about">About</a>
+            <a class="nav-link" data-page="projects">Projects</a>
+            <a class="nav-link" data-page="skills">Skills</a>
+            <a class="nav-link" data-page="certifications">Certifications</a>
+            <a class="nav-link" data-page="achievements">Achievements</a>
+            <a class="nav-link" data-page="contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="content-container">
+        <div id="about" class="page active">
+            <h2>Welcome to My Portfolio!</h2>
+                <p>I'm Dinesh Kumar R, a passionate B.Tech student in Information Technology with a focus on full-stack development.</p>
+                <p>With a strong foundation in programming and software engineering, I specialize in technologies like <strong>Servlet</strong>, <strong>Hibernate</strong>, <strong>MySQL</strong>, and <strong>JavaScript</strong>. I have developed numerous projects aimed at solving real-world problems and enhancing user experiences.</p>
+                <p>I'm committed to continuous learning and improvement, always seeking to expand my skill set and stay updated with the latest trends in technology.</p>
+        </div>
+        <div id="projects" class="page">
+            <h2>Projects</h2>
+            <p>Here are some of my projects:</p>
+            <div class="project-card">
+                <h4>Event Mining</h4>
+                <p>• Developed a web platform designed to enhance engagement and communication among college students and institutions, inspired 
+                    by social media functionalities. 
+                    • Enabled colleges to post events and announcements, allowing students to express interest in participation and stay updated on 
+                    campus activities. 
+                    • Collaborated with a team to ensure effective project delivery and implementation. 
+                    • Technological Stack: Spring boot,React js. </p>
+            </div>
+            <div class="project-card">
+                <h4>Algomarket</h4>
+                <p>• Developed an online marketplace that empowers farmers to sell their products directly to consumers, enhancing accessibility and 
+                    promoting local agriculture. 
+                    • Enabled farmers to create and manage product listings, showcasing fresh produce and goods while providing detailed descriptions 
+                    and pricing information. 
+                    • Technological Stack: HTML,CSS,JavaScript and Servlet. </p>
+            </div>
+            <div class="project-card">
+                <h4>Face Recognition Attendance System</h4>
+                <p>• Developed an innovative attendance system utilizing face recognition technology to automate and streamline the tracking of student 
+                    attendance. 
+                    • Leveraged OpenCV and Haar Cascade classifiers to accurately detect and recognize student faces in real-time, ensuring efficient 
+                    attendance management. 
+                    • Integrated a user-friendly interface that allows educators to easily access attendance records and generate reports for their classes. 
+                    • Technological Stack: Python, Face-Recognition, Open-CV, Haar Cascade.</p>
+            </div>
+        </div>
+        <div id="skills" class="page">
+            <h2>Skills</h2>
+            <p>• Java</p>
+            <p>• Python</p>
+            <p>• C</p>
+            <p>• C++</p>
+            <p>• Oracle</p>
+            <p>• SQL</p>
+            <p>• Servlet</p>
+            <p>• Hibernate(Basic)</p>
+        </div>
+        <div id="certifications" class="page">
+            <h2>Certifications</h2>
+            <p>• Certification Completed on IIT Bombay Spoken Tutorial for Java                                                    [July - 2023]</p>
+            <p>• NPTEL Course on Data Structure and Algorithms using Java                                                         [Oct – 2024] </p>
+              <p>• Hacker Rank Certification on Problem Solving (Basic)                                                             [Sep – 2024] </p>
+            <p> • Certification Completed on GUVI for Python                                                                       [Mar – 2024] </p>
+            <p>• Certification Completed on Cognitive Class for SQL and Relational Databases                                      [Feb – 2024]</p>
+        </div>
+        <div id="achievements" class="page">
+            <h2>Achievements</h2>
+            <p>• Completion of 500+ Problems in Leetcode.</p>
+            <p>• Completion of 800+ Problems in SkillRack.</p>
+            <p>• Participated in 24-hours Hackathon conducted by Karpagam college of Engineering.</p>
+        </div>
+        <div id="contact" class="page">
+            <h2>Contact</h2>
+            <p>You can reach me at: <a href="mailto:your_email@example.com">dineshkumarraja2004@gmail.com</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Generate live coding stream effect background
+        const liveCodeBackground = document.getElementById('live-code-background');
+
+        function createCodeStream() {
+            const codeLine = document.createElement('div');
+            codeLine.className = 'code-line';
+            codeLine.style.left = `${Math.random() * 100}vw`;
+            codeLine.style.opacity = Math.random() * 0.7 + 0.3; // Adjust opacity between 0.3 and 1
+            codeLine.textContent = generateRandomCode();
+            liveCodeBackground.appendChild(codeLine);
+
+            // Remove code line after animation completes
+            setTimeout(() => liveCodeBackground.removeChild(codeLine), 10000);
+        }
+
+        function generateRandomCode() {
+            const lines = [
+                'for (let i = 0; i < 100; i++) { console.log(i); }',
+                'function sayHello(name) { return `Hello, ${name}`; }',
+                'const fetchData = async () => { await fetch(url); }',
+                'let counter = 0; counter += 1;',
+                'const PI = 3.1415;',
+                'if (condition) { execute(); } else { retry(); }',
+                'let response = await fetch("https://api.example.com/data");',
+                'console.log("Data fetched:", response);',
+                'function processData(data) { return data.map(item => item * 2); }'
+            ];
+            return lines[Math.floor(Math.random() * lines.length)];
+        }
+
+        // Continuously create code streams
+        setInterval(createCodeStream, 1000);
+
+        // Page Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                pages.forEach(p => p.classList.remove('active'));
+
+                link.classList.add('active');
+                document.getElementById(link.getAttribute('data-page')).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
